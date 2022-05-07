@@ -15,6 +15,10 @@ module.exports = (sequelize, Sequelize) => {
     type: {
       type: Sequelize.INTEGER,
     },
+    status: {
+      type: Sequelize.INTEGER,
+      defaultValue: 1
+    }
   });
 
   return Category;

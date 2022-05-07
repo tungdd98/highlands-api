@@ -30,7 +30,7 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  const { page, perPage, id, title, type } = req.query;
+  const { page, perPage, id, title, type, status } = req.query;
   const condition = {};
 
   if (id) {
@@ -41,6 +41,9 @@ exports.findAll = (req, res) => {
   }
   if (type) {
     condition.type = type;
+  }
+  if (status) {
+    condition.status = status;
   }
 
   const { limit, offset } = getPagination(page, perPage);

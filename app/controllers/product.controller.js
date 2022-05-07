@@ -39,23 +39,75 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  const { page, perPage, id, title, isHot, categoryId, status } = req.query;
+  const {
+    page,
+    perPage,
+    id,
+    title,
+    isHot,
+    categoryId,
+    status,
+    sort,
+    startPrice,
+    endPrice,
+  } = req.query;
   const condition = {};
+  const order = [];
 
   if (id) {
     condition.id = id;
   }
+
   if (title) {
     condition.title = { [Op.like]: `%${title}%` };
   }
+
   if (isHot) {
     condition.isHot = isHot;
   }
+
   if (categoryId) {
     condition.categoryId = categoryId;
   }
+
   if (status) {
     condition.status = status;
+  }
+
+  if (sort) {
+    switch (sort) {
+      case "name_asc":
+        order.push(["title", "ASC"]);
+        break;
+
+      case "name_desc":
+        order.push(["title", "DESC"]);
+        break;
+
+      case "price_asc":
+        order.push(["price", "ASC"]);
+        break;
+
+      case "price_desc":
+        order.push(["price", "DESC"]);
+        break;
+
+      case "created_at_asc":
+        order.push(["id", "ASC"]);
+        break;
+
+      default:
+        order.push(["id", "DESC"]);
+        break;
+    }
+  } else {
+    order.push(["id", "DESC"]);
+  }
+
+  if (startPrice && endPrice) {
+    condition.price = {
+      [Op.between]: [+startPrice, +endPrice],
+    };
   }
 
   const { limit, offset } = getPagination(page, perPage);
@@ -65,6 +117,7 @@ exports.findAll = (req, res) => {
     limit,
     offset,
     include: [Category],
+    order,
   })
     .then((data) => {
       const response = getPagingData(data, page, limit);
