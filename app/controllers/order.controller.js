@@ -64,7 +64,12 @@ exports.findAll = (req, res) => {
 
   const { limit, offset } = getPagination(page, perPage);
 
-  Order.findAndCountAll({ limit, offset, include: [Location] })
+  Order.findAndCountAll({
+    limit,
+    offset,
+    include: [Location],
+    order: [["id", "DESC"]],
+  })
     .then((data) => {
       const response = getPagingData(data, page, limit);
       res.send(response);
