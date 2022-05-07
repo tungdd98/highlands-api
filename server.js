@@ -20,12 +20,12 @@ app.use(express.static(path.resolve("./public")));
 
 const db = require("./app/models");
 
-// db.sequelize.sync();
+db.sequelize.sync();
 // // drop the table if it already exists
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-  initialRole();
-});
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+//   initialRole();
+// });
 
 // simple route
 app.get("/", (req, res) => {
