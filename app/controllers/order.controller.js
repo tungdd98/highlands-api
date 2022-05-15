@@ -206,3 +206,21 @@ exports.totalOrders = (req, res) => {
       });
     });
 };
+
+exports.findLatestProducts = (req, res) => {
+  OrderDetail.findAndCountAll({
+    limit: 5,
+    order: [["id", "DESC"]],
+    group: "productId",
+    include: [Product],
+  })
+    .then((data) => {
+      const response = getPagingData(data, 1, 5);
+      res.send(response);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving orders.",
+      });
+    });
+};

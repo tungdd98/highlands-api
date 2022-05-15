@@ -137,3 +137,15 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+exports.totalUsers = (req, res) => {
+  User.count()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error" + err,
+      });
+    });
+};

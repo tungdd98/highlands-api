@@ -3,6 +3,7 @@ module.exports = (app) => {
 
   const router = require("express").Router();
 
+  router.get("/latest_products", orderController.findLatestProducts);
   router.get(
     "/total_quantity_orders_completed",
     orderController.statisticTotalQuantityOrders

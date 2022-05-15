@@ -208,3 +208,15 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+exports.totalProducts = (req, res) => {
+  Product.count()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error" + err,
+      });
+    });
+};

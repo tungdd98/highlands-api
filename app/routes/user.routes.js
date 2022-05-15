@@ -3,6 +3,7 @@ module.exports = (app) => {
 
   const router = require("express").Router();
 
+  router.get("/total_users", userController.totalUsers);
   router.post("/", userController.create);
   router.get("/", userController.findAll);
   router.get("/:id", userController.findOne);
