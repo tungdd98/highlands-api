@@ -4,6 +4,7 @@ const Order = db.order;
 const OrderDetail = db.orderDetail;
 const Product = db.product;
 const Location = db.location;
+const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
   const order = {
@@ -121,6 +122,87 @@ exports.findOrderDetailByOrderId = (req, res) => {
       res.status(500).send({
         message:
           "Error retrieving order with order detail order id = " + orderId,
+      });
+    });
+};
+
+exports.statisticTotalQuantityOrders = (req, res) => {
+  const { startTime, endTime } = req.query;
+
+  Order.sum("totalQuantity", {
+    where: {
+      status: {
+        [Op.eq]: 4,
+      },
+      updatedAt: {
+        [Op.between]: [startTime, endTime || new Date()],
+      },
+    },
+  })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error" + err,
+      });
+    });
+};
+
+exports.statisticTotalMoneyOrders = (req, res) => {
+  const { startTime, endTime } = req.query;
+
+  Order.sum("totalMoney", {
+    where: {
+      status: {
+        [Op.eq]: 4,
+      },
+      updatedAt: {
+        [Op.between]: [startTime, endTime || new Date()],
+      },
+    },
+  })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error" + err,
+      });
+    });
+};
+
+exports.statisticTotalOrders = (req, res) => {
+  const { startTime, endTime } = req.query;
+
+  Order.count({
+    where: {
+      status: {
+        [Op.eq]: 4,
+      },
+      updatedAt: {
+        [Op.between]: [startTime, endTime || new Date()],
+      },
+    },
+  })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error" + err,
+      });
+    });
+};
+
+exports.totalOrders = (req, res) => {
+  Order.count()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error" + err,
       });
     });
 };

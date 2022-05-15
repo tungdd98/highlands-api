@@ -78,6 +78,8 @@ exports.signin = (req, res) => {
           roles: authorities,
           accessToken: token,
           locations: user.locations,
+          name: user.name,
+          thumbnail: user.thumbnail
         });
       });
     })
