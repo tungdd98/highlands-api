@@ -92,7 +92,7 @@ exports.update = (req, res) => {
   const id = req.params.id;
 
   User.update({ name: req.body.name }, { where: { id } })
-    .then((data) => {
+    .then(() => {
       if (req.body.roles) {
         Role.findAll({
           where: {
@@ -101,10 +101,13 @@ exports.update = (req, res) => {
             },
           },
         }).then((roles) => {
-          res.send({ message: "User was updated successfully." });
-          // user.setRoles(roles).then(() => {
-          //   res.send({ message: "User was updated successfully." });
-          // });
+          User.findOne({
+            where: { id },
+          }).then((user) => {
+            user.setRoles(roles).then(() => {
+              res.send({ message: "User was updated successfully." });
+            });
+          });
         });
       }
     })

@@ -69,9 +69,7 @@ exports.signin = (req, res) => {
 
       const authorities = [];
       user.getRoles().then((roles) => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
-        }
+        const authorities = roles.map((role) => role.id);
         res.status(200).send({
           id: user.id,
           email: user.email,
