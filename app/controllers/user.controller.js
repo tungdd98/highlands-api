@@ -2,6 +2,7 @@ const { getPagination, getPagingData } = require("../helpers");
 const db = require("../models");
 const User = db.user;
 const Location = db.location;
+const Role = db.role;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
@@ -65,8 +66,20 @@ exports.findOne = (req, res) => {
     },
     include: [Location],
   })
-    .then((data) => {
-      res.send(data);
+    .then((user) => {
+      user.getRoles().then((roles) => {
+        const authorities = roles.map((role) => role.id);
+
+        res.status(200).send({
+          id: user.id,
+          email: user.email,
+          roles: authorities,
+          locations: user.locations,
+          name: user.name,
+          thumbnail: user.thumbnail,
+          createdAt: user.createdAt,
+        });
+      });
     })
     .catch((err) => {
       res.status(500).send({
@@ -78,17 +91,20 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  User.update(req.body, {
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "User was updated successfully.",
-        });
-      } else {
-        res.send({
-          message: `Cannot update user with id=${id}.`,
+  User.update({ name: req.body.name }, { where: { id } })
+    .then((data) => {
+      if (req.body.roles) {
+        Role.findAll({
+          where: {
+            id: {
+              [Op.or]: req.body.roles,
+            },
+          },
+        }).then((roles) => {
+          res.send({ message: "User was updated successfully." });
+          // user.setRoles(roles).then(() => {
+          //   res.send({ message: "User was updated successfully." });
+          // });
         });
       }
     })

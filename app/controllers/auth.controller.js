@@ -19,7 +19,7 @@ exports.signup = (req, res) => {
       if (req.body.roles) {
         Role.findAll({
           where: {
-            name: {
+            id: {
               [Op.or]: req.body.roles,
             },
           },
@@ -79,7 +79,7 @@ exports.signin = (req, res) => {
           accessToken: token,
           locations: user.locations,
           name: user.name,
-          thumbnail: user.thumbnail
+          thumbnail: user.thumbnail,
         });
       });
     })
